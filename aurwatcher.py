@@ -1,9 +1,27 @@
 #!/usr/bin/env python3
+#Usage example: aurwatcher p=emacs
 
 import requests
 import json
 import sys
 from functools import reduce
+
+
+def print_help():
+    options = '''
+    aurwatcher looks for packages in AUR.\n\n
+    
+    available options:\n
+    p - package\n
+    d - description\n
+    m - maintainer\n
+    n - name\n\n
+
+    Usage example: aurwatcher p=emacs d=plugin\n
+    Finds every package which name contains emacs and description contains plugin as substring.\n
+    '''
+    print(options)
+    
 
 def parse_arguments():
     '''returns the hash-table of arguments'''
@@ -11,6 +29,7 @@ def parse_arguments():
     #at least there is only one argument - the script name
     if len(sys.argv) == 1:
         print("error: not enough arguments")
+        print_help()
         exit(0)
     
     table = {} #key is argument name, value is key's value
@@ -27,6 +46,7 @@ def parse_arguments():
             left, right = arg.split("=")
         except ValueError:
             print("incorrect format of argument! it should be a=b")
+            print_help()
             exit(-1)
 
         #key should exist as available key and it must not be added already
@@ -34,6 +54,7 @@ def parse_arguments():
             table[left] = right
         else:
             print("key is used already or doesn't exist!")
+            print_help()
             exit(-1)
     
     return table
